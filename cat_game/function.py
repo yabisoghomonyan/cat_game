@@ -1,11 +1,9 @@
 import pygame
 import sys
-PAUSE_OVER = pygame.USEREVENT + 1#նշանակում ենք գործողություն 
-#ընդհանուր նշանակի , որ բոլորին հասանելի լինի 
-def cat_fitting_with_fish(fishes, offset,Fish,screen):# վերացնւոմ է կարիքը fish.eating-ի
-        fish=Fish(screen)#դու ստեղծում ես փոփոխական (fish), որը պահում է Fish դասի օբյեկտ։
-        fishes.add(fish)#դու քո ստեղծած fish օբյեկտը  ավելացնում ես fishes խմբի մեջ։
-        #այժմ fishes խմբին պատկանող fish տարրերը ունեն Fish դասի հատկությունները
+PAUSE_OVER = pygame.USEREVENT + 
+def cat_fitting_with_fish(fishes, offset,Fish,screen):
+        fish=Fish(screen)
+        fishes.add(fish)
         mx, my = pygame.mouse.get_pos()
         local_x = mx - offset[0]
         local_y = my - offset[1]
@@ -14,14 +12,14 @@ def cat_jump(cat,thread,fishes,offset,Fish,screen,cabinet,wall):
     for event in pygame.event.get():
         if event.type==pygame.QUIT:
             sys.exit()
-        if event.type == PAUSE_OVER:#ստուգում ենք , արդյոք թայմեռը վերջացավ
-            cat.paused = False#փոխում ենք արժեք
+        if event.type == PAUSE_OVER:
+            cat.paused = False
             print(" I am hungry")
         elif event.type==pygame.KEYDOWN:
             if event.key==pygame.K_SPACE:
-                on=cat.rect.bottom>=cat.screen_rect.bottom#գետնի վրա լինելու պայման
-                off=cat.rect.colliderect(thread.rect) or cat.rect.bottom==thread.rect.top#կծիկի վրա լինելու պայման
-                it=cat.rect.bottom==cabinet.rect.top#կծիկի վրա լինելու պայման
+                on=cat.rect.bottom>=cat.screen_rect.bottom
+                off=cat.rect.colliderect(thread.rect) or cat.rect.bottom==thread.rect.top
+                it=cat.rect.bottom==cabinet.rect.top
                 out=cat.rect.bottom==wall.rect.top 
                 if on or off or it or out:
                     cat.jumping=True
@@ -36,8 +34,8 @@ def cat_jump(cat,thread,fishes,offset,Fish,screen,cabinet,wall):
             if event.key==pygame.K_LEFT:
                 cat.moving_left=False
         elif event.type == pygame.MOUSEBUTTONDOWN:
-            if event.button == 3:  # աջ մկնիկ
-                cat_fitting_with_fish(fishes,offset,Fish,screen)# էն գործողությունները , որոնք ստեղ անելու էի
+            if event.button == 3:
+                cat_fitting_with_fish(fishes,offset,Fish,screen)
 def cat_jumps_to_the_wall(cat,wall):
     if cat.jumping:
         if not hasattr(cat, "bottom_jump"):
@@ -46,9 +44,8 @@ def cat_jumps_to_the_wall(cat,wall):
         if cat.bottom_jump - cat.rect.bottom >= cat.jump_height :
             cat.jumping = False
             cat.falling = True
-            delattr(cat, "bottom_jump")  # ջնջում ենք, երբ հասնում է բարձրությանը
+            delattr(cat, "bottom_jump")
         if cat.rect.top<=wall.rect.bottom and cat.rect.colliderect(wall.rect) :
-            #նշանը մեզ օգնում է , որ ավելի բարձր լինելու դեպքում էլ աշխատի
             cat.jumping = False
             cat.falling = True
 def cat_falls(cat,thread,cabinet,wall):
@@ -91,13 +88,13 @@ def cat_falls(cat,thread,cabinet,wall):
         if not off:
             cat.falling=True
         if cat.rect.bottom>=cat.screen_rect.bottom:
-            cat.falling=False#արգելում ես վայրէջք
+            cat.falling=False
 def cat_moves_to_left(thread, cat,cabinet):
     if cat.moving_left:
         if cat.rect.left>cabinet.rect.left and not cat.rect.colliderect(cabinet.rect):
             cat.face_left()
             cat.rect.centerx -= cat.speed
-            if cat.rect.colliderect(thread.rect):#հպման համար
+            if cat.rect.colliderect(thread.rect):
                 thread.rect.right-= thread.speed
                 cat.rect.left = thread.rect.right
         if  cat.rect.colliderect(cabinet.rect):
@@ -106,7 +103,7 @@ def cat_moves_to_right(thread, cat):
     if cat.moving_right and cat.rect.right < cat.screen_rect.right :
         cat.face_right()
         cat.rect.centerx += cat.speed
-        if cat.rect.colliderect(thread.rect):#հպման համար
+        if cat.rect.colliderect(thread.rect):
             thread.rect.left+= thread.speed
             cat.rect.right = thread.rect.left
 def bounch_from_eges(cat,thread,cabinet):
@@ -115,10 +112,8 @@ def bounch_from_eges(cat,thread,cabinet):
     if thread.rect.colliderect(cabinet.rect):
         thread.rect.left=cabinet.rect.right+cat.rect.width+10
 def cat_eats_fish(fishes, cat):
-    if getattr(cat, "paused", False):#Եթե cat-ը ունի .paused attribute և այն True է → ֆունկցիան դադարեցնում է աշխատանքը (չի ուտում ձուկ)։
-                                     #Եթե cat-ը չունի .paused կամ այն False է → ֆունկցիան շարունակվում է սովորականի պես։
-        return  # եթե True, չուտի
-    
+    if getattr(cat, "paused", False):
+        return  
     if not hasattr(cat, "eaten"):
         cat.eaten = 0
 
@@ -131,7 +126,7 @@ def cat_eats_fish(fishes, cat):
                 delattr(cat, "eaten")
                 cat.paused = True
                 print(" I am full ")
-                pygame.time.set_timer(PAUSE_OVER, 30_000, loops=1)#թայմերն է , 30վ չի ուտում
+                pygame.time.set_timer(PAUSE_OVER, 30_000, loops=1)
 
 def fish_direction(fishes,thread,cabinet,wall):
     for fish in fishes:
@@ -160,4 +155,5 @@ def cat_movements(cat,thread,fishes,offset,Fish,screen,cabinet,wall):
     bounch_from_eges(cat,thread,cabinet)
 def fish_movements(cat,fishes,thread,cabinet,wall):
     cat_eats_fish(fishes, cat)
+
     fish_direction(fishes,thread,cabinet,wall)
