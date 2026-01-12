@@ -8,7 +8,7 @@ def cat_fitting_with_fish(fishes, offset,Fish,screen):
         local_x = mx - offset[0]
         local_y = my - offset[1]
         fish.rect.center = (local_x, local_y)
-def cat_jump(cat,thread,fishes,offset,Fish,screen,cabinet,wall):
+def cat_movement(cat,thread,fishes,offset,Fish,screen,cabinet,wall):
     for event in pygame.event.get():
         if event.type==pygame.QUIT:
             sys.exit()
@@ -147,7 +147,7 @@ def flower_rect(flowers,wall):
     flowers.rect2.centerx=wall.rect.left+55
     flowers.rect3.centerx=wall.rect.right-20
 def cat_movements(cat,thread,fishes,offset,Fish,screen,cabinet,wall):
-    cat_jump(cat,thread,fishes,offset,Fish,screen,cabinet,wall)
+    cat_movement(cat,thread,fishes,offset,Fish,screen,cabinet,wall)
     cat_jumps_to_the_wall(cat,wall)
     cat_falls(cat,thread,cabinet,wall)
     cat_moves_to_left(thread, cat,cabinet)
@@ -157,3 +157,4 @@ def fish_movements(cat,fishes,thread,cabinet,wall):
     cat_eats_fish(fishes, cat)
 
     fish_direction(fishes,thread,cabinet,wall)
+
